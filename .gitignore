@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# PySpark
+*.log
+metastore_db/
+derby.log
+spark-warehouse/
+
+# Data files (raw data shouldn't be in git)
+data/raw/
+*.csv
+*.parquet
+
+# AWS / secrets
+.env
+*.pem
+credentials.json
+aws-credentials*
+
+# OS/IDE
+.DS_Store
+.vscode/
+.idea/
