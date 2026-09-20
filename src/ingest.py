@@ -1,12 +1,11 @@
-from pyspark.sql import SparkSession
+from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import (
-    StructType,
-    StructField,
-    StringType,
-    DecimalType,
     DateType,
+    DecimalType,
+    StringType,
+    StructField,
+    StructType,
 )
-
 
 spark = (
     SparkSession.builder
@@ -14,7 +13,7 @@ spark = (
     .getOrCreate()
 )
 
-schema = StructType([
+PRICE_PAID_SCHEMA = StructType([
     StructField("transaction_id", StringType(), False),
     StructField("price", DecimalType(12, 2), False),
     StructField("transfer_date", DateType(), False),
@@ -33,20 +32,16 @@ schema = StructType([
     StructField("record_status", StringType(), False),
 ])
 
-df = (
-    spark.read
-    .option("header", "false")
-    .option("quote", '"')
-    .schema(schema)
-    .csv("data/raw/price_paid_2025.csv")
-)
+def ingest_price_paid(
+    spark: SparkSession,
+    input_path: str,
+) -> DataFrame:
+    """Read HM Land Registry Price Paid data into a typed DataFrame."""
 
-print("Rows:", df.count())
-
-print("\nSchema:")
-df.printSchema()
-
-print("\nSample:")
-df.show(5, truncate=False)
-
-spark.stop()
+    return (
+        spark.read
+        .option("header", "false")
+        .option("quote", '"')
+        .schema(PRICE_PAID_SCHEMA)
+        .csv(input_path)
+    )
