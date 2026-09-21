@@ -1,5 +1,5 @@
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, trim, upper
+from pyspark.sql.functions import col, month, trim, upper, year
 
 
 def standardize_text(df: DataFrame) -> DataFrame:
@@ -42,3 +42,23 @@ def find_invalid_rows(df: DataFrame) -> DataFrame:
     )
 
     return invalid_rows
+
+
+def write_silver(
+    df: DataFrame,
+    output_path: str,
+) -> None:
+    """Write validated Price Paid data to partitioned Silver Parquet storage."""
+
+    silver_df = (
+        df
+        .withColumn("transfer_year", year("transfer_date"))
+        .withColumn("transfer_month", month("transfer_date"))
+    )
+
+    (
+        silver_df.write
+        .mode("overwrite")
+        .partitionBy("transfer_year", "transfer_month")
+        .parquet(output_path)
+    )
