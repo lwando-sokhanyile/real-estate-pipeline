@@ -1,9 +1,7 @@
 from pyspark.sql import SparkSession
 
 from src.ingest import ingest_price_paid
-from src.silver import standardize_text
-from pyspark.sql.functions import length
-
+from src.silver import find_invalid_rows, standardize_text
 
 INPUT_PATH = "data/raw/price_paid_2025.csv"
 
@@ -21,14 +19,20 @@ def main() -> None:
 
         cleaned_df = standardize_text(df)
 
-        print("Postcode length check:")
-        cleaned_df.select(
-            "postcode",
-        ).withColumn(
-            "postcode_length",
-            length("postcode")
-        ).show(10, truncate=False)
+        invalid_df = find_invalid_rows(cleaned_df)
 
+        total_rows = cleaned_df.count()
+        invalid_rows = invalid_df.count()
+        valid_rows = total_rows - invalid_rows
+
+        print(f"Total rows: {total_rows}")
+        print(f"Valid rows: {valid_rows}")
+        print(f"Invalid rows: {invalid_rows}")
+
+        if invalid_rows > 0:
+            print("Invalid row sample:")
+            invalid_df.show(10, truncate=False)
+    
     finally:
         spark.stop()
 
