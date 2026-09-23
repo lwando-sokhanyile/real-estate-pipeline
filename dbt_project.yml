@@ -1,0 +1,13 @@
+name: 'real_estate_pipeline'
+version: '1.0.0'
+config-version: 2
+
+profile: 'real_estate'
+
+model-paths: ["models"]
+test-paths: ["tests"]
+
+models:
+  real_estate_pipeline:
+    staging:
+      +materialized: view
