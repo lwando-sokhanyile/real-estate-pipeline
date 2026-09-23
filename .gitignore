@@ -33,3 +33,8 @@ lib/
 data/
 *.csv
 *.parquet
+
+# dbt
+target/
+dbt_packages/
+logs/
