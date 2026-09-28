@@ -1,0 +1,62 @@
+version: 2
+
+models:
+  - name: stg_price_paid
+    description: "Staged HM Land Registry Price Paid transactions."
+
+    columns:
+      - name: transaction_id
+        description: "Unique identifier for the property transaction."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: price
+        description: "Sale price of the property."
+        data_tests:
+          - not_null
+
+      - name: transfer_date
+        description: "Date the property transaction was completed."
+        data_tests:
+          - not_null
+
+      - name: property_type
+        description: "Property type code."
+        data_tests:
+          - not_null
+          - accepted_values:
+             arguments:
+              values: ['D', 'F', 'O', 'S', 'T']
+
+      - name: old_new
+        description: "Indicates whether the property is a new build."
+        data_tests:
+          - not_null
+          - accepted_values:
+             arguments:
+              values: ['Y', 'N']
+
+      - name: duration
+        description: "Property tenure code."
+        data_tests:
+          - not_null
+          - accepted_values:
+             arguments:
+              values: ['F', 'L']
+
+      - name: ppd_category
+        description: "Price Paid Data category."
+        data_tests:
+          - not_null
+          - accepted_values:
+             arguments:
+              values: ['A', 'B']
+
+      - name: record_status
+        description: "Record status code."
+        data_tests:
+          - not_null
+          - accepted_values:
+             arguments:
+              values: ['A']
