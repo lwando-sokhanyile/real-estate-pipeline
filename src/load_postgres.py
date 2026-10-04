@@ -3,7 +3,9 @@ from pyspark.sql import SparkSession
 
 JDBC_URL = "jdbc:postgresql://127.0.0.1:5432/real_estate"
 JDBC_DRIVER = "org.postgresql.Driver"
+
 TARGET_TABLE = "staging.price_paid"
+LOAD_TABLE = "staging.price_paid_load"
 
 
 def load_to_postgres(
