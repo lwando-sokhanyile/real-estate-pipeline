@@ -1,10 +1,15 @@
+import os
+
 from pyspark.sql import SparkSession
 
 from src.bronze import write_bronze
 from src.ingest import ingest_price_paid
 
 
-INPUT_PATH = "data/raw/price_paid_2025.csv"
+INPUT_PATH = os.getenv(
+    "REAL_ESTATE_INPUT",
+    "data/pp-complete.csv",
+)
 OUTPUT_PATH = "data/bronze/price_paid"
 
 
