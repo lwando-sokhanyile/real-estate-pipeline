@@ -36,7 +36,7 @@ def find_invalid_rows(df: DataFrame) -> DataFrame:
         | col("transfer_date").isNull()
         | ~col("property_type").isin("D", "F", "O", "S", "T")
         | ~col("old_new").isin("Y", "N")
-        | ~col("duration").isin("F", "L")
+        | ~col("duration").isin("F", "L", "U")
         | ~col("ppd_category").isin("A", "B")
         | ~col("record_status").isin("A")
     )
