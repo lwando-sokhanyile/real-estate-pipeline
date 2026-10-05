@@ -4,6 +4,7 @@ from pathlib import Path
 from pyspark.sql import SparkSession
 
 from src.load_postgres import load_partition
+from src.monitoring import start_run, finish_run
 
 
 SILVER_ROOT = "data/silver/price_paid"
@@ -68,6 +69,11 @@ def main() -> None:
             print("=" * 60)
 
             try:
+                run_id = start_run(
+                    stage="postgres_load",
+                    partition_name=f"{year}-{month:02d}",
+                )
+
                 load_partition(
                     spark=spark,
                     silver_root=SILVER_ROOT,
@@ -76,7 +82,19 @@ def main() -> None:
                     jdbc_user=user,
                     jdbc_password=password,
                 )
+
+                finish_run(
+                    run_id=run_id,
+                    status="SUCCESS",
+                )
+
             except Exception as exc:
+                finish_run(
+                    run_id=run_id,
+                    status="FAILED",
+                    error_message=str(exc),
+                )
+
                 print()
                 print("=" * 60)
                 print(f"FAILED: {year}-{month:02d}")
