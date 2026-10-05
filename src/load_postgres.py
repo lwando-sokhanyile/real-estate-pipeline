@@ -1,5 +1,6 @@
 import psycopg2
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import lit
 
 
 JDBC_URL = "jdbc:postgresql://127.0.0.1:5432/real_estate"
@@ -37,6 +38,52 @@ def load_to_staging(
         .save()
     )
 
+def load_partition(
+    spark: SparkSession,
+    silver_root: str,
+    year: int,
+    month: int,
+    jdbc_user: str,
+    jdbc_password: str,
+) -> None:
+    """Load one Silver year/month partition into PostgreSQL."""
+
+    partition_path = (
+        f"{silver_root}/"
+        f"transfer_year={year}/"
+        f"transfer_month={month}"
+    )
+
+    print(f"Loading partition: {year}-{month:02d}")
+    print(f"Path: {partition_path}")
+
+    df = spark.read.parquet(partition_path)
+
+    df = (
+        df
+        .withColumn("transfer_year", lit(year))
+        .withColumn("transfer_month", lit(month))
+    )
+
+    (
+        df.write
+        .format("jdbc")
+        .option("url", JDBC_URL)
+        .option("dbtable", LOAD_TABLE)
+        .option("user", jdbc_user)
+        .option("password", jdbc_password)
+        .option("driver", JDBC_DRIVER)
+        .option("sslmode", "disable")
+        .option("batchsize", 10000)
+        .mode("overwrite")
+        .save()
+    )
+    merge_staging_to_target(
+        jdbc_user=jdbc_user,
+        jdbc_password=jdbc_password,
+    )
+
+    print(f"Completed partition: {year}-{month:02d}")
 
 def merge_staging_to_target(
     jdbc_user: str,
@@ -67,10 +114,14 @@ def merge_staging_to_target(
 
     column_list = ", ".join(columns)
 
+    source_column_list = ", ".join(
+        f"load.{column}" for column in columns
+    )
+
     sql = f"""
         INSERT INTO {TARGET_TABLE} ({column_list})
-        SELECT {column_list}
-        FROM {LOAD_TABLE}
+        SELECT {source_column_list}
+        FROM {LOAD_TABLE} AS load
         ON CONFLICT (transaction_id) DO NOTHING;
     """
 
