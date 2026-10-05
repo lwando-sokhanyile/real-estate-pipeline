@@ -45,7 +45,7 @@ def load_partition(
     month: int,
     jdbc_user: str,
     jdbc_password: str,
-) -> None:
+) -> int:
     """Load one Silver year/month partition into PostgreSQL."""
 
     partition_path = (
@@ -78,17 +78,18 @@ def load_partition(
         .mode("overwrite")
         .save()
     )
-    merge_staging_to_target(
+    rows_inserted = merge_staging_to_target(
         jdbc_user=jdbc_user,
         jdbc_password=jdbc_password,
     )
 
     print(f"Completed partition: {year}-{month:02d}")
+    return rows_inserted
 
 def merge_staging_to_target(
     jdbc_user: str,
     jdbc_password: str,
-) -> None:
+) -> int:
     """Merge staged rows into the target table idempotently."""
 
     columns = [
@@ -138,6 +139,7 @@ def merge_staging_to_target(
             with connection.cursor() as cursor:
                 cursor.execute(sql)
                 print(f"Rows inserted: {cursor.rowcount}")
+                return cursor.rowcount
 
     finally:
         connection.close()

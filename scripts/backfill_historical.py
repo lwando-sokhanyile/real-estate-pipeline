@@ -74,7 +74,7 @@ def main() -> None:
                     partition_name=f"{year}-{month:02d}",
                 )
 
-                load_partition(
+                rows_processed = load_partition(
                     spark=spark,
                     silver_root=SILVER_ROOT,
                     year=year,
@@ -86,6 +86,7 @@ def main() -> None:
                 finish_run(
                     run_id=run_id,
                     status="SUCCESS",
+                    rows_processed=rows_processed,
                 )
 
             except Exception as exc:
