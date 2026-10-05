@@ -67,14 +67,22 @@ def main() -> None:
             print(f"Partition {index}/{len(partitions)}: {year}-{month:02d}")
             print("=" * 60)
 
-            load_partition(
-                spark=spark,
-                silver_root=SILVER_ROOT,
-                year=year,
-                month=month,
-                jdbc_user=user,
-                jdbc_password=password,
-            )
+            try:
+                load_partition(
+                    spark=spark,
+                    silver_root=SILVER_ROOT,
+                    year=year,
+                    month=month,
+                    jdbc_user=user,
+                    jdbc_password=password,
+                )
+            except Exception as exc:
+                print()
+                print("=" * 60)
+                print(f"FAILED: {year}-{month:02d}")
+                print(f"Reason: {exc}")
+                print("=" * 60)
+                raise
 
     finally:
         spark.stop()
