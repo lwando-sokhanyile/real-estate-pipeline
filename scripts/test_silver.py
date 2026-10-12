@@ -11,7 +11,7 @@ from src.silver import (
 
 INPUT_PATH = os.getenv(
     "REAL_ESTATE_INPUT",
-    "data/pp-complete.csv",
+    "data/raw/pp-complete.csv",
 )
 OUTPUT_PATH = "data/silver/price_paid"
 

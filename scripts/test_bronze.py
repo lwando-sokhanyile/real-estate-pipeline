@@ -8,7 +8,7 @@ from src.ingest import ingest_price_paid
 
 INPUT_PATH = os.getenv(
     "REAL_ESTATE_INPUT",
-    "data/pp-complete.csv",
+    "data/raw/pp-complete.csv",
 )
 OUTPUT_PATH = "data/bronze/price_paid"
 

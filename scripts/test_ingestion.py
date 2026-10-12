@@ -11,7 +11,7 @@ spark = (
 
 df = ingest_price_paid(
     spark,
-    "data/pp-complete.csv",
+    "data/raw/pp-complete.csv",
 )
 
 print("Rows:", df.count())
