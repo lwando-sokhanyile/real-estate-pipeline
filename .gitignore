@@ -38,3 +38,7 @@ data/
 target/
 dbt_packages/
 logs/
+
+# Allow reproducible test fixtures
+!tests/fixtures/
+!tests/fixtures/*.csv

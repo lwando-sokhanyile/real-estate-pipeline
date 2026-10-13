@@ -7,12 +7,6 @@ from pyspark.sql.types import (
     StructType,
 )
 
-spark = (
-    SparkSession.builder
-    .appName("real-estate-ingestion")
-    .getOrCreate()
-)
-
 PRICE_PAID_SCHEMA = StructType([
     StructField("transaction_id", StringType(), False),
     StructField("price", DecimalType(12, 2), False),
