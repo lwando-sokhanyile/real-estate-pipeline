@@ -24,7 +24,7 @@ A hands-on data engineering portfolio project built around **HM Land Registry Pr
 
 *Numbers above are recorded results from project testing and troubleshooting, not results of a fresh run performed for this README.*
 
-## The problem — and why I built it
+## The problem  and why I built it
 
 The HM Land Registry publishes transaction-level property sale records as CSV. The raw historical extract is useful, but it is **not yet an analytics-ready data product**: it needs typed ingestion, consistent validation across decades of records, dependable relational loading, and models that answer market questions without requiring a dashboard to repeatedly process raw transactions.
 
@@ -52,7 +52,7 @@ The result is a layered batch pipeline that supports analysis of **property sale
 
 **Important behavior:** Bronze and Silver writes use `overwrite`; they are not append-only stores. The PostgreSQL merge uses `ON CONFLICT (transaction_id) DO NOTHING`, which prevents duplicate inserts but **does not update changed source records**.
 
-## Power BI — analytical output
+## Power BI  analytical output
 
 Power BI connects to PostgreSQL and uses five marts: `mart_monthly_market_trends`, `mart_property_type_trends`, `mart_monthly_county_trends`, `mart_county_property_type`, and `mart_market_rankings`.
 
@@ -114,7 +114,7 @@ The seven marts support different analytical grains: county summaries, price sta
 - **dbt tests:** Custom SQL tests cover transaction uniqueness, row-count and market reconciliations, mart grain, rankings, and category mapping.
 - **Operational traceability:** PostgreSQL table `monitoring.pipeline_runs` records execution status, partitions, row counts, timing, and error information. Historical backfill and targeted recovery scripts are present.
 
-## Engineering challenges — the work behind the result
+## Engineering challenges  the work behind the result
 
 | Challenge I encountered | Investigation / engineering decision | Outcome and lesson |
 |---|---|---|
